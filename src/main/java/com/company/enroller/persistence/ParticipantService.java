@@ -43,5 +43,4 @@ public class ParticipantService {
 		transaction.commit();
 		
 	}
-
 }
