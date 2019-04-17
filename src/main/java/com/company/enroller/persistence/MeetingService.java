@@ -23,4 +23,17 @@ public class MeetingService {
 		return query.list();
 	}
 
+	public Meeting findById(long meetingId) {
+		String hql = "FROM Meeting as mt where mt.id =" + meetingId;
+		Query query = connector.getSession().createQuery(hql);
+		return (Meeting) query.uniqueResult();
+	}
+
+	public void add(Meeting meeting) {
+		Transaction transaction = connector.getSession().beginTransaction();
+		connector.getSession().save(meeting);
+		transaction.commit();
+		
+	}
+
 }
