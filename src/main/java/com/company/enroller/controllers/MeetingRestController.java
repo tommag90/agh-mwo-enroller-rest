@@ -47,6 +47,23 @@ public class MeetingRestController {
 		meetingService.add(meeting);
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/{id}/{userLogin}", method = RequestMethod.POST)
+	public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long meetingId,
+			@PathVariable("userLogin") String login, @RequestBody Participant participant) {
+		Meeting meeting = meetingService.findById(meetingId);
+		if(meeting == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		Participant foundParticipant = new ParticipantService().findByLogin(login);
+		if(foundParticipant == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		meeting.addParticipant(participant);
+		meetingService.updateMeeting(meeting);
+		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+	
+	}
 
 //	@RequestMapping(value = "", method = RequestMethod.POST)
 //	public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
