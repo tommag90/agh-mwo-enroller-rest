@@ -53,14 +53,15 @@ public class MeetingRestController {
 			@PathVariable("userLogin") String login) {
 		Meeting meeting = meetingService.findById(meetingId);
 		if(meeting == null) {
-			return new ResponseEntity("No meeting" ,HttpStatus.NOT_FOUND);
+			return new ResponseEntity("Meeting not found" ,HttpStatus.NOT_FOUND);
 		}
 		Participant participant = new ParticipantService().findByLogin(login);
 		if(participant == null) {
-			return new ResponseEntity("No participant" ,HttpStatus.NOT_FOUND);
+			return new ResponseEntity("Participant not found" ,HttpStatus.NOT_FOUND);
 		}
 		meetingService.addParticipantToMeeting(meetingId, participant);
-		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+		return new ResponseEntity("Participant " + participant.getLogin() +
+				" added to the meeting " + meeting.getId(), HttpStatus.OK);
 	
 	}
 	
@@ -81,7 +82,8 @@ public class MeetingRestController {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 		meetingService.deleteMeeting(meeting);
-		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+		return new ResponseEntity("Meeting " + meeting.getId() +
+				" deleted.", HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
@@ -93,7 +95,8 @@ public class MeetingRestController {
 		}
 		incomingMeeting.setId(meetingId);
 		meetingService.updateMeeting(incomingMeeting);
-		return new ResponseEntity<Meeting>(incomingMeeting, HttpStatus.OK);
+		return new ResponseEntity("Meeting " + incomingMeeting.getId() +
+				" updated", HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/{id}/participants/{userLogin}", method = RequestMethod.DELETE)
@@ -101,14 +104,15 @@ public class MeetingRestController {
 			@PathVariable("userLogin") String login) {
 		Meeting meeting = meetingService.findById(meetingId);
 		if(meeting == null) {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity("Meeting not found", HttpStatus.NOT_FOUND);
 		}
 		Participant participant = new ParticipantService().findByLogin(login);
 		if (participant == null) {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity("Participant not found", HttpStatus.NOT_FOUND);
 		}
 		meetingService.deleteParticipantFromMeeting(meetingId, participant);
-		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
+		return new ResponseEntity("Participant " + participant.getLogin() +
+				" deleted from the meeting " + meeting.getId(), HttpStatus.OK);
 	}
 
 }
