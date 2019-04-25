@@ -84,38 +84,17 @@ public class MeetingRestController {
 		meetingService.deleteMeeting(meeting);
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
-	
-//	@RequestMapping(value = "", method = RequestMethod.POST)
-//	public ResponseEntity<?> registerParticipant(@RequestBody Participant participant) {
-//		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
-//		if (foundParticipant != null) {
-//			return new ResponseEntity("Unable to create. A participant with login " + participant.getLogin() + " already exist.", HttpStatus.CONFLICT);
-//	     }
-//		
-//		participantService.add(participant);
-//		return new ResponseEntity<Participant>(participant, HttpStatus.CREATED);
-//	}
-//	
-//	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-//	public ResponseEntity<?> deleteParticipant(@PathVariable("id") String login) {
-//		Participant participant = participantService.findByLogin(login);
-//		if (participant == null) {
-//	         return new ResponseEntity(HttpStatus.NOT_FOUND);
-//	     }
-//		participantService.delete(participant);
-//		return new ResponseEntity("Participant " + participant.getLogin() + " deleted", HttpStatus.OK);
-//	}
-//	
-//	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-//	public ResponseEntity<?> updateParticipantPassword(@PathVariable("id") String login,
-//			@RequestBody Participant incomingParticipant) {
-//		Participant participant = participantService.findByLogin(login);
-//		if (participant == null) {
-//	         return new ResponseEntity(HttpStatus.NOT_FOUND);
-//	     }
-//		participant.setPassword(incomingParticipant.getPassword());
-//		participantService.update(participant);
-//		return new ResponseEntity("Participant " + participant.getLogin() + " updated", HttpStatus.OK);
-//	}
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	public ResponseEntity<?> updateMeeting(@PathVariable("id") long meetingId,
+			@RequestBody Meeting incomingMeeting) {
+		Meeting meeting = meetingService.findById(meetingId);
+		if (meeting == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		incomingMeeting.setId(meetingId);
+		meetingService.updateMeeting(incomingMeeting);
+		return new ResponseEntity<Meeting>(incomingMeeting, HttpStatus.OK);
+	}
 
 }
