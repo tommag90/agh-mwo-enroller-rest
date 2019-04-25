@@ -48,19 +48,18 @@ public class MeetingRestController {
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "/{id}/{userLogin}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{id}/participants/{userLogin}", method = RequestMethod.POST)
 	public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long meetingId,
-			@PathVariable("userLogin") String login, @RequestBody Participant participant) {
+			@PathVariable("userLogin") String login) {
 		Meeting meeting = meetingService.findById(meetingId);
 		if(meeting == null) {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+			return new ResponseEntity("No meeting" ,HttpStatus.NOT_FOUND);
 		}
-		Participant foundParticipant = new ParticipantService().findByLogin(login);
-		if(foundParticipant == null) {
-			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		Participant participant = new ParticipantService().findByLogin(login);
+		if(participant == null) {
+			return new ResponseEntity("No participant" ,HttpStatus.NOT_FOUND);
 		}
-		meeting.addParticipant(participant);
-		meetingService.updateMeeting(meeting);
+		meetingService.addParticipantToMeeting(meetingId, participant);
 		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	
 	}
@@ -95,6 +94,21 @@ public class MeetingRestController {
 		incomingMeeting.setId(meetingId);
 		meetingService.updateMeeting(incomingMeeting);
 		return new ResponseEntity<Meeting>(incomingMeeting, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/{id}/participants/{userLogin}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteParticipantFromMeeting(@PathVariable("id") Long meetingId,
+			@PathVariable("userLogin") String login) {
+		Meeting meeting = meetingService.findById(meetingId);
+		if(meeting == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		Participant participant = new ParticipantService().findByLogin(login);
+		if (participant == null) {
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		meetingService.deleteParticipantFromMeeting(meetingId, participant);
+		return new ResponseEntity<Meeting>(meeting, HttpStatus.OK);
 	}
 
 }
